@@ -1,7 +1,6 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -40,10 +39,43 @@ const TableData = ({ coins, searchCoin }) => {
         setCurrentPage(pageNumber);
     };
 
+     // Helper function to generate the range of page numbers to show
+     const getPageNumbers = () => {
+        const pageNumbers = [];
+        const maxVisiblePages = 3; // Number of pages to show around the current page
+
+        if (totalPages <= maxVisiblePages + 2) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            pageNumbers.push(1); // Always show the first page
+
+            if (currentPage > maxVisiblePages) {
+                pageNumbers.push("..."); // Ellipsis before current page range
+            }
+
+            const start = Math.max(2, currentPage - 1);
+            const end = Math.min(totalPages - 1, currentPage + 1);
+
+            for (let i = start; i <= end; i++) {
+                pageNumbers.push(i);
+            }
+
+            if (currentPage < totalPages - maxVisiblePages) {
+                pageNumbers.push("..."); // Ellipsis after current page range
+            }
+
+            pageNumbers.push(totalPages); // Always show the last page
+        }
+
+        return pageNumbers;
+    };
+
     return (
         <>
             <Table>
-                <TableCaption>A list of available coins</TableCaption>
+                
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px]">Coin</TableHead>
@@ -69,7 +101,7 @@ const TableData = ({ coins, searchCoin }) => {
                 </TableBody>
             </Table>
 
-            <div>
+            <div className="">
                 {/* Pagination Component */}
                 <Pagination>
                     <PaginationContent>
@@ -79,17 +111,23 @@ const TableData = ({ coins, searchCoin }) => {
                                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                             />
                         </PaginationItem>
-                        {[...Array(totalPages)].map((_, index) => (
+
+                        {getPageNumbers().map((page, index) => (
                             <PaginationItem key={index}>
-                                <PaginationLink
-                                    href="#"
-                                    isActive={index + 1 === currentPage}
-                                    onClick={() => handlePageChange(index + 1)}
-                                >
-                                    {index + 1}
-                                </PaginationLink>
+                                {page === "..." ? (
+                                    <span className="px-2">...</span>
+                                ) : (
+                                    <PaginationLink
+                                        href="#"
+                                        isActive={page === currentPage}
+                                        onClick={() => handlePageChange(page)}
+                                    >
+                                        {page}
+                                    </PaginationLink>
+                                )}
                             </PaginationItem>
                         ))}
+
                         <PaginationItem>
                             <PaginationNext
                                 href="#"
