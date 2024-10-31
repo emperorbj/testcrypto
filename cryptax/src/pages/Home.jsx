@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input"
 import { SearchIcon } from "lucide-react"
 import "@lottiefiles/lottie-player";
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom";
 import Table from "@/components/TableData";
 
 const Home = () => {
@@ -16,7 +15,6 @@ const Home = () => {
             const response = await fetch(`https://api.coinlore.net/api/tickers/`)
             const data = await response.json()
             setCoins(data.data)
-            console.log(data.data);
 
         }
 
